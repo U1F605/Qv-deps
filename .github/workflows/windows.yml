@@ -1,8 +1,6 @@
 name: Build Qv deps
 
 on:
-  schedule:
-      - cron: '0 0 */2 * *'
   push:
       
 jobs:
@@ -62,43 +60,3 @@ jobs:
         asset_name: ${{ matrix.package }}-${{ matrix.arch }}-${{ matrix.os }}.7z
         tag: release
         overwrite: true
-  build-tools:
-    runs-on: ubuntu-latest
-    name: Build grpc tools for android
-    steps:
-    - uses: actions/checkout@v2    
-    - name: Install vcpkg
-      shell: bash
-      run: |
-        set +e
-        git clone https://github.com/microsoft/vcpkg
-        ./vcpkg/bootstrap-vcpkg.sh
-
-    - name: Prepare gRPC
-      shell: bash
-      run: |
-        set +e
-        cd vcpkg
-        ./vcpkg install grpc
-
-    - name: Create Tools 7z
-      uses: DuckSoft/create-7z-action@v1.0
-      with:
-        pathSource: ./vcpkg/installed/x64-linux/tools
-        pathTarget: ./grpc-tools-linux.7z
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@master
-      with:
-        name: grpc-tools-linux.7z
-        path: grpc-tools-linux.7z
-        
-    - name: Upload To Release
-      uses: svenstaro/upload-release-action@v1-release
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: grpc-tools-linux.7z
-        asset_name: grpc-tools-linux.7z
-        tag: release
-        overwrite: true
-    
