@@ -1,4 +1,4 @@
-name: Build Qv2ray deps for Android / Windows
+name: Build Qv deps
 
 on:
   schedule:
@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         package: [grpc, curl, openssl]
-        os: [windows, android]
+        os: [windows]
         arch: [arm, arm64, x86, x64]
         exclude:
           - os: windows
@@ -24,9 +24,6 @@ jobs:
           - os: windows
             osname: windows
             runon: windows-latest
-          - os: android
-            osname: linux
-            runon: ubuntu-latest
       fail-fast: false
       
     runs-on: ${{ matrix.runon }}
@@ -40,31 +37,6 @@ jobs:
         git clone https://github.com/microsoft/vcpkg
         ./vcpkg/bootstrap-vcpkg.sh
 
-    - name: Prepare Android protoc and grpc_cpp_plugin
-      if: matrix.package == 'grpc' && matrix.os == 'android'
-      shell: bash
-      run: |
-        cd vcpkg
-        ./vcpkg install grpc
-        mkdir -p ./installed/${{ matrix.arch }}-android/bin
-        cp ./installed/x64-linux/tools/protobuf/protoc ./installed/${{ matrix.arch }}-android/bin
-        cp ./installed/x64-linux/tools/grpc/grpc_cpp_plugin ./installed/${{ matrix.arch }}-android/bin
-    
-    - name: Prepare Android Triplet
-      if: matrix.os == 'android'
-      shell: bash
-      run: |
-        cd vcpkg
-        git apply -v ../0001_vcpkg_fix_curl_android_build.patch
-        mkdir -p ./triplets/community
-        echo "
-        set(VCPKG_TARGET_ARCHITECTURE ${{ matrix.arch }})
-        set(VCPKG_CRT_LINKAGE dynamic)
-        set(VCPKG_LIBRARY_LINKAGE static)
-        set(VCPKG_CMAKE_SYSTEM_NAME Android)
-        " | tee ./triplets/community/${{ matrix.arch }}-android.cmake
-        ls -lah ./triplets/community
-    
     - name: Install ${{ matrix.package }} on ${{ matrix.arch }}
       shell: bash
       run: |
