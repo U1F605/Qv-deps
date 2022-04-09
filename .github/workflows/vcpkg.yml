@@ -1,0 +1,28 @@
+name: Build vcpkg
+
+on:
+  push:
+      
+jobs:
+  build:
+    strategy:
+      matrix:
+        package: [grpc, curl, openssl]
+        os: [windows]
+        arch: [x64]
+        include:
+          - os: windows
+            osname: windows
+            runon: windows-latest
+      fail-fast: false
+      
+    runs-on: ${{ matrix.runon }}
+    
+    steps:
+    - uses: actions/checkout@v2    
+    - name: Install vcpkg
+      shell: bash
+      run: |
+        set +e
+        git clone https://github.com/microsoft/vcpkg
+        ./vcpkg/bootstrap-vcpkg.sh
