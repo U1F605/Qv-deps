@@ -7,9 +7,9 @@ jobs:
   build:
     strategy:
       matrix:
-        package: [grpc, curl, openssl, protobuf, abseil, c-ares, re2, upb, zlib]
+        package: [curl, openssl, protobuf, abseil, c-ares, re2, upb, zlib]
         os: [windows]
-        arch: [arm, arm64, x86, x64]
+        arch: [x64]
         exclude:
           - os: windows
             arch: arm
