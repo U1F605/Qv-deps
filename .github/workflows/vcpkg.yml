@@ -14,3 +14,8 @@ jobs:
         set +e
         git clone https://github.com/microsoft/vcpkg
         ./vcpkg/bootstrap-vcpkg.sh
+    - name: Upload Artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: vcpkg
+        path: ./vcpkg/vcpkg
