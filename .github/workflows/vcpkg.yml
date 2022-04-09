@@ -5,19 +5,7 @@ on:
       
 jobs:
   build:
-    strategy:
-      matrix:
-        package: [grpc, curl, openssl]
-        os: [windows]
-        arch: [x64]
-        include:
-          - os: windows
-            osname: windows
-            runon: windows-latest
-      fail-fast: false
-      
-    runs-on: ${{ matrix.runon }}
-    
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2    
     - name: Install vcpkg
