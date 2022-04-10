@@ -7,7 +7,7 @@ jobs:
   build:
     strategy:
       matrix:
-        package: [grpc, curl, openssl]
+        package: [curl, openssl]
         os: [windows]
         arch: [x64]
         include:
